@@ -1,10 +1,11 @@
 # Changelog
 
-## [Fixes] - April 11, 2024
+## [Fixes and New Additions] - April 11, 2024
 
-- Refactor internal code structure.
-- Add an additional check to verify if the selected text is empty, even if it contains only white spaces.
-- Correct token counting in the history view.
+- Feat: Add an additional check to verify if the selected text is empty, even if it contains only white spaces.
+- Feat: Add action duplication feature.
+- Fix: Correct token counting in the history view.
+- Internal: Refactor internal code structure.
 
 ## [New Additions] - April 10, 2024
 
