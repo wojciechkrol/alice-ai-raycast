@@ -19,7 +19,7 @@ export default function ExecuteAction({ action, prompt }: Props) {
   const [chat, setChat] = useState<ChatCompletionMessageParam[]>([]);
   const [result, setResult] = useState<string>("");
 
-  const metadata = useMetadata(chat, action.model || "gpt-3.5-turbo");
+  const metadata = useMetadata(chat, action.model);
 
   const generateResponse = async () => {
     setResult("");
