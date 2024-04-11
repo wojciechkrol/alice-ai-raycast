@@ -100,6 +100,7 @@ export default function CommandForm({ id }: Props) {
       <Form.TextField title="Name" placeholder="Enter action name" {...itemProps.name} />
       <Form.TextArea title="Description" placeholder="Enter action description" {...itemProps.description} />
       <Form.TextArea title="System Prompt" placeholder="Enter system prompt" {...itemProps.systemPrompt} />
+      {/* @ts-expect-error The type of the model is Model, whereas the event dropdown is always a string. */}
       <Form.Dropdown title="Model" {...itemProps.model}>
         {Object.entries(AvailableModels).map(([model, name]) => (
           <Form.Dropdown.Item key={model} value={model} title={name} />

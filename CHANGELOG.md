@@ -4,6 +4,7 @@
 
 - Feat: Add an additional check to verify if the selected text is empty, even if it contains only white spaces.
 - Feat: Add action duplication feature.
+- Fix: Fix export / import timeout.
 - Fix: Correct token counting in the history view.
 - Internal: Refactor internal code structure.
 
