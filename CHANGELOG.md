@@ -1,5 +1,11 @@
 # Changelog
 
+## [Fixes] - April 11, 2024
+
+- Refactor internal code structure.
+- Add an additional check to verify if the selected text is empty, even if it contains only white spaces.
+- Correct token counting in the history view.
+
 ## [New Additions] - April 10, 2024
 
 - Moved create action to the separate command.
