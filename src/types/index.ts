@@ -8,6 +8,7 @@ export interface Action {
   model: Model;
   temperature: string;
   maxTokens: string;
+  favorite: boolean;
 }
 
 export interface History {

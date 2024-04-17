@@ -12,10 +12,19 @@ export function getPreference(key: keyof Preferences): string {
   return getPreferenceValues<Preferences>()[key];
 }
 
-export function createStore<T>(name: string, state: StateCreator<T>) {
+interface StoreOptions<T> {
+  name: string;
+  state: StateCreator<T>;
+  version?: number;
+  migrate?: (persistedState: unknown, version: number) => T;
+}
+
+export function createStore<T>({ name, version, state, migrate }: StoreOptions<T>) {
   return create<T>()(
     persist(state, {
       name,
+      version,
+      migrate,
       storage: createJSONStorage(() => ({
         getItem: (name: string): Promise<string | null> => LocalStorage.getItem(name).then((value) => value?.toString() ?? null),
         setItem: (name: string, value: string) => LocalStorage.setItem(name, value),

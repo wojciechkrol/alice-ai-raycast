@@ -1,8 +1,11 @@
 # Changelog
 
-## [Fixes] - April 17, 2024
+## [Fixes and New Additions] - April 17, 2024
 
 - Fix: Handling errors during server communication.
+- Feat: Add Favorites feature.
+- Internal: Refactor store structure and backup mechanism. Add store versioning.
+
 
 ## [Fixes and New Additions] - April 11, 2024
 

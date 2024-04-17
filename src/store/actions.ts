@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { randomUUID } from "crypto";
 import { useState } from "react";
+import extension from "../../extension.json";
 import { Action } from "../types";
 import { createStore } from "../utils";
 
@@ -8,7 +10,8 @@ interface ActionState {
   addAction: (action: Omit<Action, "id">) => void;
   editAction: (action: Action) => void;
   removeAction: (id: string) => void;
-  replaceActions: (actions: Action[]) => void;
+  addToFavorites: (id: string) => void;
+  removeFromFavorites: (id: string) => void;
 }
 
 const initialState: Action[] = [
@@ -20,6 +23,7 @@ const initialState: Action[] = [
     model: "gpt-3.5-turbo",
     temperature: "0.7",
     maxTokens: "-1",
+    favorite: false,
   },
   {
     id: "34e4b5f1-1b7a-4b8b-8aaf-e8d9a8f8c502",
@@ -29,6 +33,7 @@ const initialState: Action[] = [
     model: "gpt-3.5-turbo",
     temperature: "0.7",
     maxTokens: "-1",
+    favorite: false,
   },
   {
     id: "9f34b8e2-4d93-4c9b-9e79-4228a3d0f97b",
@@ -39,6 +44,7 @@ const initialState: Action[] = [
     model: "gpt-3.5-turbo",
     temperature: "0.7",
     maxTokens: "-1",
+    favorite: false,
   },
   {
     id: "eabc2912-f2ad-4b5a-80d2-993b5f3e5c21",
@@ -49,39 +55,61 @@ const initialState: Action[] = [
     model: "gpt-3.5-turbo",
     temperature: "0.7",
     maxTokens: "-1",
+    favorite: false,
   },
 ] as Action[];
 
-export const useActionsState = createStore<ActionState>("actions", (set, get) => ({
-  actions: initialState,
+export const useActionsState = createStore<ActionState>({
+  name: "actions",
+  version: extension.version,
+  state: (set, get) => ({
+    actions: initialState,
 
-  addAction: (action: Omit<Action, "id">) => {
-    set({
-      actions: [
-        ...get().actions,
-        {
-          ...action,
-          id: randomUUID(),
-        },
-      ],
-    });
+    addAction: (action: Omit<Action, "id">) => {
+      set({
+        actions: [
+          ...get().actions,
+          {
+            ...action,
+            id: randomUUID(),
+            favorite: false,
+          },
+        ],
+      });
+    },
+    removeAction: (id: string) => {
+      set({
+        actions: get().actions.filter((item) => item.id !== id),
+      });
+    },
+    editAction: (action: Action) => {
+      set({
+        actions: get().actions.map((item) => (item.id === action.id ? action : item)),
+      });
+    },
+    addToFavorites: (id: string) => {
+      set({
+        actions: get().actions.map((item) => (item.id === id ? { ...item, favorite: true } : item)),
+      });
+    },
+    removeFromFavorites: (id: string) => {
+      set({
+        actions: get().actions.map((item) => (item.id === id ? { ...item, favorite: false } : item)),
+      });
+    },
+  }),
+  migrate: (persistedState: any, version) => {
+    switch (version) {
+      case 1:
+        persistedState.actions.map((action: any) => {
+          action.favorite = false;
+          return action;
+        });
+    }
+
+    return persistedState;
   },
-  removeAction: (id: string) => {
-    set({
-      actions: get().actions.filter((item) => item.id !== id),
-    });
-  },
-  editAction: (action: Action) => {
-    set({
-      actions: get().actions.map((item) => (item.id === action.id ? action : item)),
-    });
-  },
-  replaceActions: (actions: Action[]) => {
-    set({
-      actions,
-    });
-  },
-}));
+});
 
 export const useActionsAreReady = () => {
   const [ready, setReady] = useState(false);

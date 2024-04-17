@@ -16,6 +16,7 @@ const initialValues: IAction = {
   model: "gpt-3.5-turbo",
   temperature: "0.7",
   maxTokens: "-1",
+  favorite: false,
 };
 
 export default function CommandForm({ id }: Props) {
