@@ -42,12 +42,12 @@ export default function CommandList() {
     addAction(action);
   };
 
-  const renderActionItem = (action: ActionModel, icon: string = "👋") => {
+  const renderActionItem = (action: ActionModel, icon: string) => {
     return (
       <List.Item
         key={action.id}
         title={action.name}
-        icon={icon}
+        icon={{ source: icon, tintColor: action.color }}
         subtitle={action.description}
         accessories={[
           {
@@ -126,9 +126,9 @@ export default function CommandList() {
       }
     >
       {favoriteActions.length > 0 && (
-        <List.Section title="Favorites">{favoriteActions.map((action) => renderActionItem(action, "⭐️"))}</List.Section>
+        <List.Section title="Favorites">{favoriteActions.map((action) => renderActionItem(action, Icon.Checkmark))}</List.Section>
       )}
-      <List.Section title="Actions">{otherActions.map((action) => renderActionItem(action))}</List.Section>
+      <List.Section title="Actions">{otherActions.map((action) => renderActionItem(action, Icon.Dot))}</List.Section>
     </List>
   );
 }

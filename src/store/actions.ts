@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { useState } from "react";
 import extension from "../../extension.json";
 import { Action } from "../types";
-import { createStore } from "../utils";
+import { Colors, createStore } from "../utils";
 
 interface ActionState {
   actions: Action[];
@@ -18,6 +18,7 @@ const initialState: Action[] = [
   {
     id: "b0259928-4a63-4e27-9d3b-df76c6a8e290",
     name: "Summarize",
+    color: Colors.Blue,
     description: "Provide a concise summary of the provided text, highlighting the main points and key information.",
     systemPrompt: "Summarize the key points and main information from the following text:",
     model: "gpt-3.5-turbo",
@@ -28,6 +29,7 @@ const initialState: Action[] = [
   {
     id: "34e4b5f1-1b7a-4b8b-8aaf-e8d9a8f8c502",
     name: "Improve Grammar",
+    color: Colors.Blue,
     description: "Correct grammatical errors and enhance the readability of the provided text, ensuring clarity and proper language use.",
     systemPrompt: "Improve the grammar and readability of the following text:",
     model: "gpt-3.5-turbo",
@@ -38,6 +40,7 @@ const initialState: Action[] = [
   {
     id: "9f34b8e2-4d93-4c9b-9e79-4228a3d0f97b",
     name: "Rewrite",
+    color: Colors.Blue,
     description:
       "Rewrite the provided text to convey the same meaning in a different way, offering a fresh perspective or alternative wording.",
     systemPrompt: "Rewrite the following text to convey the same meaning in a different way:",
@@ -49,6 +52,7 @@ const initialState: Action[] = [
   {
     id: "eabc2912-f2ad-4b5a-80d2-993b5f3e5c21",
     name: "Explain This Code",
+    color: Colors.Orange,
     description:
       "Provide a detailed explanation of the provided code snippet, including its purpose, how it works, and any key concepts involved.",
     systemPrompt: "Explain the purpose and functionality of the following code snippet:",
@@ -98,15 +102,7 @@ export const useActionsState = createStore<ActionState>({
       });
     },
   }),
-  migrate: (persistedState: any, version) => {
-    switch (version) {
-      case 1:
-        persistedState.actions.map((action: any) => {
-          action.favorite = false;
-          return action;
-        });
-    }
-
+  migrate: (persistedState: any) => {
     return persistedState;
   },
 });

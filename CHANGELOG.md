@@ -3,7 +3,8 @@
 ## [Fixes and New Additions] - April 17, 2024
 
 - Fix: Handling errors during server communication.
-- Feat: Add Favorites feature.
+- Feat: Add Favorites section.
+- Feat: Add Action colors.
 - Internal: Refactor store structure and backup mechanism. Add store versioning.
 
 

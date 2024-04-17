@@ -1,8 +1,18 @@
-import { LocalStorage, getPreferenceValues } from "@raycast/api";
+import { Color, LocalStorage, getPreferenceValues } from "@raycast/api";
 import { StateCreator, create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export const Infinity32Bit = 2147483647;
+
+export const Colors = {
+  Blue: Color.Blue,
+  Green: Color.Green,
+  Magenta: Color.Magenta,
+  Orange: Color.Orange,
+  Purple: Color.Purple,
+  Red: Color.Red,
+  Yellow: Color.Yellow,
+};
 
 export function createActionDeepLink(id: string) {
   return `raycast://extensions/quiknull/alice-ai/commands?arguments=${encodeURIComponent(`{"id":"${id}"}`)}`;
