@@ -1,21 +1,24 @@
-import { Action, ActionPanel, Form, useNavigation } from "@raycast/api";
+import { Action, ActionPanel, Form, Icon, LaunchType, Toast, launchCommand, showToast, useNavigation } from "@raycast/api";
 import { useForm } from "@raycast/utils";
-import { MODEL } from "../lib/OpenAI";
+import { AvailableModels } from "../lib/OpenAI";
 import { useActionsState } from "../store/actions";
-import { Action as IAction } from "../types";
+import { Action as ActionModel } from "../types";
+import { Colors } from "../utils";
 
 interface Props {
   id?: string;
 }
 
-const initialValues: IAction = {
+const initialValues: ActionModel = {
   id: "",
   name: "",
+  color: Colors.Blue,
   description: "",
   systemPrompt: "",
   model: "gpt-3.5-turbo",
   temperature: "0.7",
   maxTokens: "-1",
+  favorite: false,
 };
 
 export default function CommandForm({ id }: Props) {
@@ -29,21 +32,36 @@ export default function CommandForm({ id }: Props) {
     onSubmit: (values) => {
       if (action && action.id) {
         editAction({ ...values, id: action.id });
+        showToast({
+          title: "Action updated",
+          message: `The action "${values.name}" was successfully updated.`,
+          style: Toast.Style.Success,
+        });
+        navigation.pop();
       } else {
         addAction(values);
+        showToast({
+          title: "Action created",
+          message: `The action "${values.name}" was successfully created.`,
+          style: Toast.Style.Success,
+        });
+        launchCommand({
+          ownerOrAuthorName: "quiknull",
+          extensionName: "alice-ai",
+          name: "commands",
+          type: LaunchType.UserInitiated,
+        });
       }
-
-      navigation.pop();
     },
     validation: {
+      color: (value) => {
+        if (!value) {
+          return "Color is required";
+        }
+      },
       name: (value) => {
         if (value?.trim().length === 0) {
           return "Name is required";
-        }
-      },
-      description: (value) => {
-        if (value?.trim().length === 0) {
-          return "Description is required";
         }
       },
       systemPrompt: (value) => {
@@ -56,7 +74,7 @@ export default function CommandForm({ id }: Props) {
           return "Model is required";
         }
 
-        if (value && !MODEL[value]) {
+        if (value && !AvailableModels[value]) {
           return "Invalid model";
         }
       },
@@ -82,11 +100,25 @@ export default function CommandForm({ id }: Props) {
         </ActionPanel>
       }
     >
+      <Form.Dropdown title="Color" {...itemProps.color}>
+        {Object.entries(Colors).map(([key, value]) => (
+          <Form.Dropdown.Item
+            key={key}
+            value={`${value}`}
+            title={key}
+            icon={{
+              source: Icon.CircleFilled,
+              tintColor: value,
+            }}
+          />
+        ))}
+      </Form.Dropdown>
       <Form.TextField title="Name" placeholder="Enter action name" {...itemProps.name} />
       <Form.TextArea title="Description" placeholder="Enter action description" {...itemProps.description} />
       <Form.TextArea title="System Prompt" placeholder="Enter system prompt" {...itemProps.systemPrompt} />
+      {/* @ts-expect-error The type of the model is Model, whereas the event dropdown is always a string. */}
       <Form.Dropdown title="Model" {...itemProps.model}>
-        {Object.entries(MODEL).map(([model, name]) => (
+        {Object.entries(AvailableModels).map(([model, name]) => (
           <Form.Dropdown.Item key={model} value={model} title={name} />
         ))}
       </Form.Dropdown>
