@@ -30,6 +30,12 @@
       "title": "Create New Action",
       "description": "Create New Action",
       "mode": "view"
+    },
+    {
+      "name": "menubar",
+      "title": "Display Actions in Menu Bar",
+      "description": "Quick access your actions from the menu bar",
+      "mode": "menu-bar"
     }
   ],
   "preferences": [
