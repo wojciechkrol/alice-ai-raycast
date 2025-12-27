@@ -1,9 +1,8 @@
 import { Action, ActionPanel, Color, Detail, Icon, Keyboard } from "@raycast/api";
-import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources";
-import { Stream } from "openai/streaming";
+import { ModelMessage, streamText } from "ai";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCost } from "../hooks";
-import openai, { getModelName } from "../lib/OpenAI";
+import { getModel, getModelName } from "../lib/ai";
 import { useHistoryState } from "../store/history";
 import { Action as StoreAction } from "../types";
 
@@ -15,9 +14,10 @@ interface Props {
 export default function ExecuteAction({ action, prompt }: Props) {
   const addHistoryItem = useHistoryState((state) => state.addItem);
   const generateLock = useRef<boolean>(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [error, setError] = useState<string>("");
-  const [stream, setStream] = useState<Stream<ChatCompletionChunk>>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>("");
 
   const [inputTokens, setInputTokens] = useState<number>(0);
@@ -31,11 +31,15 @@ export default function ExecuteAction({ action, prompt }: Props) {
     }
 
     generateLock.current = true;
+    setIsLoading(true);
 
     setError("");
     setResult("");
+    setInputTokens(0);
+    setOutputTokens(0);
+    setTotalTokens(0);
 
-    const messages: ChatCompletionMessageParam[] = [
+    const messages: ModelMessage[] = [
       {
         role: "system",
         content: action.systemPrompt,
@@ -46,39 +50,36 @@ export default function ExecuteAction({ action, prompt }: Props) {
       },
     ];
 
+    abortControllerRef.current = new AbortController();
+
     try {
-      const stream = await openai.chat.completions.create({
-        model: action.model,
+      const { textStream, usage } = await streamText({
+        model: getModel(action.model),
         messages: messages,
         temperature: parseFloat(action.temperature),
-        max_tokens: +action.maxTokens === -1 ? undefined : +action.maxTokens,
-        stream: true,
-        stream_options: {
-          include_usage: true,
-        },
+        maxOutputTokens: +action.maxTokens === -1 ? undefined : +action.maxTokens,
+        abortSignal: abortControllerRef.current.signal,
       });
 
-      setStream(stream);
-
-      for await (const message of stream) {
-        if (message.choices.length > 0) {
-          const content = message.choices[0].delta?.content || "";
-
-          setResult((prev) => prev + content);
-        }
-
-        if (message.usage) {
-          setInputTokens(message.usage.prompt_tokens);
-          setOutputTokens(message.usage.completion_tokens);
-          setTotalTokens(message.usage.total_tokens);
-        }
+      for await (const textPart of textStream) {
+        setResult((prev) => prev + textPart);
       }
+
+      const usageInfo = await usage;
+      setInputTokens(usageInfo.inputTokens || 0);
+      setOutputTokens(usageInfo.outputTokens || 0);
+      setTotalTokens(usageInfo.totalTokens || 0);
     } catch (e) {
-      const error = e as Error;
-      setError(`## ⚠️ Error Encountered\n### ${error.message}`);
+      if (e instanceof Error && e.name === "AbortError") {
+        // Ignore abort errors
+      } else {
+        const error = e as Error;
+        setError(`## ⚠️ Error Encountered\n### ${error.message}`);
+      }
     } finally {
-      setStream(undefined);
+      setIsLoading(false);
       generateLock.current = false;
+      abortControllerRef.current = null;
     }
   }, [action, prompt]);
 
@@ -86,14 +87,14 @@ export default function ExecuteAction({ action, prompt }: Props) {
     generateResponse();
 
     return () => {
-      if (stream) {
-        stream.controller.abort();
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
     };
   }, []);
 
   useEffect(() => {
-    if (!stream && error.length === 0 && result.length > 0) {
+    if (!isLoading && error.length === 0 && result.length > 0) {
       addHistoryItem({
         action: action!,
         timestamp: Date.now(),
@@ -106,7 +107,7 @@ export default function ExecuteAction({ action, prompt }: Props) {
         },
       });
     }
-  }, [result, stream]);
+  }, [result, isLoading]);
 
   let markdown = result;
   if (error.length > 0) {
@@ -119,7 +120,7 @@ export default function ExecuteAction({ action, prompt }: Props) {
 
   return (
     <Detail
-      isLoading={stream !== undefined}
+      isLoading={isLoading}
       markdown={markdown}
       navigationTitle={action.name}
       metadata={
@@ -135,10 +136,10 @@ export default function ExecuteAction({ action, prompt }: Props) {
       }
       actions={
         <ActionPanel>
-          {stream && <Action title="Stop generating..." icon={Icon.Stop} onAction={() => stream.controller.abort()} />}
+          {isLoading && <Action title="Stop generating..." icon={Icon.Stop} onAction={() => abortControllerRef.current?.abort()} />}
           <Action.CopyToClipboard title="Copy Result" content={result} />
           <Action.Paste title="Paste Result" content={result} />
-          {!stream && (
+          {!isLoading && (
             <Action title="Regenerate" onAction={() => generateResponse()} icon={Icon.Redo} shortcut={Keyboard.Shortcut.Common.Refresh} />
           )}
         </ActionPanel>

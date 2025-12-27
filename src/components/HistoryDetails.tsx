@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Color, Detail, Icon } from "@raycast/api";
 import React, { useState } from "react";
 import { useCost } from "../hooks";
-import { getModelName } from "../lib/OpenAI";
+import { getModelName } from "../lib/ai";
 import { History } from "../types";
 
 interface Props {

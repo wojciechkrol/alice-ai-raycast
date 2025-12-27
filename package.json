@@ -67,6 +67,58 @@
             {
               "title": "GPT-4o Mini",
               "value": "gpt-4o-mini"
+            },
+            {
+              "title": "GPT-5",
+              "value": "gpt-5"
+            },
+            {
+              "title": "GPT-5 Mini",
+              "value": "gpt-5-mini"
+            },
+            {
+              "title": "GPT-5 Nano",
+              "value": "gpt-5-nano"
+            },
+            {
+              "title": "GPT-5.1",
+              "value": "gpt-5.1"
+            },
+            {
+              "title": "GPT-5.1 Mini",
+              "value": "gpt-5.1-mini"
+            },
+            {
+              "title": "GPT-5.1 Nano",
+              "value": "gpt-5.1-nano"
+            },
+            {
+              "title": "GPT-5.2",
+              "value": "gpt-5.2"
+            },
+            {
+              "title": "GPT-5.2 Mini",
+              "value": "gpt-5.2-mini"
+            },
+            {
+              "title": "GPT-5.2 Nano",
+              "value": "gpt-5.2-nano"
+            },
+            {
+              "title": "Gemini 2.5 Pro",
+              "value": "gemini-2.5-pro"
+            },
+            {
+              "title": "Gemini 2.5 Flash",
+              "value": "gemini-2.5-flash"
+            },
+            {
+              "title": "Gemini 3 Pro",
+              "value": "gemini-3-pro"
+            },
+            {
+              "title": "Gemini 3 Flash",
+              "value": "gemini-3-flash"
             }
           ],
           "required": true
@@ -103,12 +155,22 @@
       "description": "Your OpenAI API Key",
       "type": "password",
       "required": true
+    },
+    {
+      "name": "googleApiKey",
+      "title": "Google API Key",
+      "description": "Your Google Gemini API Key",
+      "type": "password",
+      "required": false
     }
   ],
   "dependencies": {
+    "@ai-sdk/google": "^3.0.1",
+    "@ai-sdk/openai": "^3.0.1",
     "@raycast/api": "^1.69.0",
     "@raycast/utils": "^1.14.0",
     "@reduxjs/toolkit": "^2.2.3",
+    "ai": "^6.0.3",
     "openai": "^4.56.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"

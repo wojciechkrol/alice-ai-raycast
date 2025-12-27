@@ -1,5 +1,5 @@
 import { Detail, LaunchProps } from "@raycast/api";
-import "./lib/OpenAI";
+import "./lib/ai";
 import { useActionsAreReady } from "./store/actions";
 import CommandExecute from "./views/CommandExecute";
 import CommandList from "./views/CommandList";

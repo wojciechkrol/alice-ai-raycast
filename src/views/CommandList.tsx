@@ -1,5 +1,5 @@
 import { Action, ActionPanel, Alert, Color, Icon, Keyboard, List, confirmAlert, useNavigation } from "@raycast/api";
-import { getModelName } from "../lib/OpenAI";
+import { getModelName } from "../lib/ai";
 import Backup from "../services/Backup";
 import { useActionsState } from "../store/actions";
 import { Action as ActionModel } from "../types";

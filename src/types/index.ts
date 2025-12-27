@@ -1,4 +1,4 @@
-import { Model } from "../lib/OpenAI";
+import { Model } from "../lib/ai";
 
 export interface Action {
   id: string;
