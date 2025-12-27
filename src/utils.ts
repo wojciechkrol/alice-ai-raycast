@@ -18,7 +18,7 @@ export function createActionDeepLink(id: string) {
   return `raycast://extensions/quiknull/alice-ai/commands?arguments=${encodeURIComponent(`{"id":"${id}"}`)}`;
 }
 
-export function getPreference(key: keyof Preferences): string {
+export function getPreference(key: keyof Preferences): string | undefined {
   return getPreferenceValues<Preferences>()[key];
 }
 

@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Form, Icon, Toast, showToast } from "@raycast/api";
 import { useForm } from "@raycast/utils";
-import { AvailableModels } from "../lib/OpenAI";
+import { AvailableModels } from "../lib/ai";
 import { useActionsState } from "../store/actions";
 import { Action as ActionModel } from "../types";
 import { Colors } from "../utils";

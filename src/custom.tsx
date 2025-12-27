@@ -1,8 +1,8 @@
 import { Detail, LaunchProps, getPreferenceValues } from "@raycast/api";
 import ExecuteAction from "./components/ExecuteAction";
 import { useSelectedText } from "./hooks";
-import "./lib/OpenAI";
-import { Model } from "./lib/OpenAI";
+import "./lib/ai";
+import { Model } from "./lib/ai";
 import { useActionsAreReady } from "./store/actions";
 import { Action } from "./types";
 
