@@ -67,6 +67,26 @@
             {
               "title": "GPT-4o Mini",
               "value": "gpt-4o-mini"
+            },
+            {
+              "title": "GPT-5.0",
+              "value": "gpt-5.0"
+            },
+            {
+              "title": "GPT-5.1",
+              "value": "gpt-5.1"
+            },
+            {
+              "title": "GPT-5.2",
+              "value": "gpt-5.2"
+            },
+            {
+              "title": "Gemini 2.5",
+              "value": "gemini-2.5"
+            },
+            {
+              "title": "Gemini 3",
+              "value": "gemini-3"
             }
           ],
           "required": true
